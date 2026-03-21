@@ -32,8 +32,6 @@ public class Profile {
 
     private Integer age;
 
-    @Enumerated(EnumType.STRING)
-
     private Double height;
 
     private Double weight;
