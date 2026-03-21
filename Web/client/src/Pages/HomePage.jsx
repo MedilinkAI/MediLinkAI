@@ -1,0 +1,12 @@
+import {React,Header,DreamJob} from '../Components/Constants/ImportConstants'
+
+const HomePage = () => {
+  return (
+    <div className='min-h-[100vh] bg-mine-shaft-950 font-[Poppins]'>
+      <Header/>
+      <DreamJob/>
+    </div>
+  )
+}
+
+export default HomePage
