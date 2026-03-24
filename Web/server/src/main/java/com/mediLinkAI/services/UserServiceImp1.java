@@ -53,7 +53,7 @@ public class UserServiceImp1 implements UserService {
     @Override
     public UserDTO loginUser(LoginDTO loginDTO) throws MediLinkAI {
         User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new MediLinkAI("USER_NOT_FOUND"));
-        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPasswordHash()))
             throw new MediLinkAI("INVALID_PASSWORD");
         return user.toDTO();
     }
@@ -82,7 +82,7 @@ public class UserServiceImp1 implements UserService {
         }
 
         otpRepository.save(otpSave);
-        message.setText(Data.getOtpEmailHtml(otp, user.getName()), true);
+        message.setText(Data.getOtpEmailHtml(otp, user.getEmail()), true);
         mailSender.send(mm);
     }
 
@@ -115,7 +115,7 @@ public class UserServiceImp1 implements UserService {
     @Override
     public ResponseDTO changePassword(LoginDTO loginDTO) throws MediLinkAI {
         User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new MediLinkAI("USER_NOT_FOUND"));
-        user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(loginDTO.getPassword()));
         userRepository.save(user);
         return new ResponseDTO("Password changed successfully");
     }

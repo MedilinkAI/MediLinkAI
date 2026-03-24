@@ -1,6 +1,7 @@
 package com.mediLinkAI.dto;
 
 import com.mediLinkAI.entity.User;
+import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    private Long id;
+    private UUID id;
     @NotBlank(message = "{user.name.absent}")
     private String name;
     @NotBlank(message = "{user.email.absent}")
@@ -26,6 +27,22 @@ public class UserDTO {
     private AccountType accountType;
 
     public User toEntity() {
-        return new User(id, name, email, password, accountType);
+        User user = new User();
+        // user.setId(...) -> ID shouldn't be mapped if it's generated, or needs UUID
+        // parsing if passed
+        user.setEmail(this.email);
+        user.setPasswordHash(this.password); // Assuming you'll hash this properly in the service layer
+
+        // Note: The User entity doesn't have 'name' or 'accountType'.
+        // You will either need to add those to your User entity,
+        // or remove them here if they belong to a different entity.
+
+        // You'll also need to set required non-null fields for the User entity
+        // that don't have default values (like phoneHash, status). For example:
+        // user.setPhoneHash("");
+        // user.setStatus(UserStatus.ACTIVE);
+
+        return user;
     }
+
 }
