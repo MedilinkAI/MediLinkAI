@@ -1,6 +1,7 @@
 package com.mediLinkAI.entity.enums;
 
 public enum PrivacyLevel {
-    STANDARD,
-    STRICT
+    PUBLIC,
+    PRIVATE,
+    FRIENDS_ONLY
 }

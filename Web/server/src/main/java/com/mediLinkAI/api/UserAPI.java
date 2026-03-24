@@ -1,7 +1,8 @@
 package com.mediLinkAI.api;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
+
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.mediLinkAI.dto.LoginDTO;
-import com.mediLinkAI.dto.ResponseDTO;
-import com.mediLinkAI.dto.UserDTO;
+import com.mediLinkAI.dto.Authentication.LoginDTO;
+import com.mediLinkAI.dto.Master.ResponseDTO;
+import com.mediLinkAI.dto.User.UserDTO;
 import com.mediLinkAI.exception.MediLinkAI;
-import com.mediLinkAI.services.UserService;
+import com.mediLinkAI.services.User.UserService;
 
 @RestController
 @CrossOrigin
@@ -35,17 +36,17 @@ public class UserAPI {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/sendOtp/{email}", produces = "application/json")
-    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable @Email(message = "{user.email.invalid}") String email)
+    @PostMapping(value = "/sendOtp/{identifier}", produces = "application/json")
+    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable @NotBlank(message = "{user.identifier.absent}") String identifier)
             throws MediLinkAI, Exception {
-        userService.sendOtp(email);
+        userService.sendOtp(identifier);
         return new ResponseEntity<>(new ResponseDTO("OTP sent successfully"), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/verifyOtp/{email}/{otp}", produces = "application/json")
-    public ResponseEntity<ResponseDTO> verifyOtp(@PathVariable @Email(message = "{user.email.invalid}") String email,
+    @GetMapping(value = "/verifyOtp/{identifier}/{otp}", produces = "application/json")
+    public ResponseEntity<ResponseDTO> verifyOtp(@PathVariable @NotBlank(message = "{user.identifier.absent}") String identifier,
             @PathVariable @Pattern(regexp = "^[0-9]{6}$", message = "{otp.invalid}") String otp) throws MediLinkAI {
-        Boolean isValid = userService.verifyOtp(email, otp);
+        Boolean isValid = userService.verifyOtp(identifier, otp);
         if (isValid) {
             return new ResponseEntity<>(new ResponseDTO("OTP verified successfully"), HttpStatus.OK);
         }
