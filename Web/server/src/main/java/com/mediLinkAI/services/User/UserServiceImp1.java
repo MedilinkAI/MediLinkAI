@@ -60,7 +60,7 @@ public class UserServiceImp1 implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPhoneHash(phoneHash); // Store SHA-256 hashed phone
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword())); // BCrypt encoded password
-        user.setStatus(UserStatus.ACTIVE); // Default status is ACTIVE
+        user.setStatus(UserStatus.PENDING_VERIFICATION); // Set to pending until OTP is verified
 
         // Conditional MFA setup
         if (userDTO.isMfaRequired()) {
@@ -72,7 +72,20 @@ public class UserServiceImp1 implements UserService {
         }
 
         user = userRepository.save(user);
-        return user.toDTO();
+        
+        // Auto-send OTP for registration verification
+        try {
+            this.sendOtp(user.getEmail());
+        } catch (Exception e) {
+            throw new MediLinkAI("Failed to send OTP email during registration.");
+        }
+
+        UserDTO responseDTO = user.toDTO();
+        if (user.getMfaEnabled() != null && user.getMfaEnabled()) {
+            responseDTO.setMfaSecret(user.getMfaSecret());
+        }
+        
+        return responseDTO;
     }
 
     @Override
@@ -168,7 +181,33 @@ public class UserServiceImp1 implements UserService {
         // Delete OTP after successful verification (one-time use)
         otpRepository.delete(otpEntity);
 
+        // If the user is currently pending registration verification, activate them
+        if (user.getStatus() == UserStatus.PENDING_VERIFICATION) {
+            user.setStatus(UserStatus.ACTIVE);
+            userRepository.save(user);
+        }
+
         return true;
+    }
+
+    @Override
+    public Boolean verifyMfaSecret(String identifier, String secret) throws MediLinkAI {
+        User user;
+        if (identifier.contains("@")) {
+            user = userRepository.findByEmail(identifier).orElseThrow(() -> new MediLinkAI("USER_NOT_FOUND"));
+        } else {
+            user = userRepository.findByPhoneHash(Utilities.hashPhone(identifier)).orElseThrow(() -> new MediLinkAI("USER_NOT_FOUND"));
+        }
+
+        if (user.getMfaEnabled() != null && user.getMfaEnabled()) {
+            if (secret.equals(user.getMfaSecret())) {
+                return true;
+            } else {
+                throw new MediLinkAI("INVALID_MFA_SECRET");
+            }
+        } else {
+            throw new MediLinkAI("MFA_NOT_ENABLED");
+        }
     }
 
     @Override

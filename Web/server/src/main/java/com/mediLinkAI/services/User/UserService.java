@@ -14,5 +14,7 @@ public interface UserService {
 
     public Boolean verifyOtp(String identifier, String otp) throws MediLinkAI;
 
+    public Boolean verifyMfaSecret(String identifier, String secret) throws MediLinkAI;
+
     public ResponseDTO changePassword(LoginDTO loginDTO) throws MediLinkAI;
 }

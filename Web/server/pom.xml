@@ -11,7 +11,7 @@
 	<groupId>com.mediLinkAI</groupId>
 	<artifactId>MediLink-AI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Nutri-Track</name>
+	<name>MediLink-AI</name>
 	<description>Spring Boot Backend for MediLinkAI</description>
 	<properties>
 		<java.version>17</java.version>

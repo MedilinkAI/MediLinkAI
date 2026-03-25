@@ -81,7 +81,7 @@ public class Data {
                 "<body>" +
                 "    <div class=\"container\">" +
                 "        <div class=\"header\">" +
-                "            <h1>NutriTrack</h1>" +
+                "            <h1>MediLinkAI</h1>" +
                 "            <p>OTP Verification</p>" +
                 "        </div>" +
                 "        <div class=\"content\">" +
@@ -98,12 +98,12 @@ public class Data {
                 "                <p><strong>⚠️ Security Notice:</strong> If you did not request this OTP, please ignore this email or contact our support team immediately.</p>"
                 +
                 "            </div>" +
-                "            <p>Thank you for using the NutriTrack!</p>" +
-                "            <p>Best regards,<br>NutriTrack Team</p>" +
+                "            <p>Thank you for using the MediLinkAI!</p>" +
+                "            <p>Best regards,<br>MediLinkAI Team</p>" +
                 "        </div>" +
                 "        <div class=\"footer\">" +
                 "            <p>This is an automated email. Please do not reply to this message.</p>" +
-                "            <p>&copy; 2025 NutriTrack. All rights reserved.</p>" +
+                "            <p>&copy; 2025 MediLinkAI. All rights reserved.</p>" +
                 "        </div>" +
                 "    </div>" +
                 "</body>" +

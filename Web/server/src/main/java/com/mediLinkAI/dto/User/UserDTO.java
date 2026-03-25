@@ -25,6 +25,7 @@ public class UserDTO {
     private String phone; // Added phone number field
 
     private boolean mfaRequired = false; // Flag to indicate if MFA is required upon login
+    private String mfaSecret; // Field to expose generated MFA Secret key upon registration
 
     @NotBlank(message = "{user.password.absent}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message = "{user.password.invalid}")

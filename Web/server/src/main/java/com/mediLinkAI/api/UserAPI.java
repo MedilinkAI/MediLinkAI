@@ -53,6 +53,17 @@ public class UserAPI {
         return new ResponseEntity<>(new ResponseDTO("OTP verification failed"), HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping(value = "/verifyMfaSecret/{identifier}/{secret}", produces = "application/json")
+    public ResponseEntity<ResponseDTO> verifyMfaSecret(
+            @PathVariable @NotBlank(message = "{user.identifier.absent}") String identifier,
+            @PathVariable @NotBlank(message = "{mfa.secret.absent}") String secret) throws MediLinkAI {
+        Boolean isValid = userService.verifyMfaSecret(identifier, secret);
+        if (isValid) {
+            return new ResponseEntity<>(new ResponseDTO("MFA Secret verified successfully"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDTO("MFA Secret verification failed"), HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping(value = "/changePassword")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody @Valid LoginDTO loginDTO) throws MediLinkAI {
         ResponseDTO responseDTO = userService.changePassword(loginDTO);
