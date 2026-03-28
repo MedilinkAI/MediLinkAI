@@ -46,12 +46,18 @@ export const RegisterPage = () => {
     try {
       setLoading(true);
       const response = await authService.register(formData);
+      if (response.errorMessage) {
+        setError(err.response.errorMessage);
+
+      }
       if (response && response.mfaSecret) {
-         setMfaSecret(response.mfaSecret);
+        setMfaSecret(response.mfaSecret);
       }
       setStep('otp');
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Registration failed');
+      //setError('Registration failed');
+
+      setError(err.response?.data?.errorMessage || err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -60,7 +66,7 @@ export const RegisterPage = () => {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!otp || otp.length < 6) {
       return setError('Please enter a valid 6-digit OTP');
     }
@@ -68,9 +74,9 @@ export const RegisterPage = () => {
     try {
       setLoading(true);
       await authService.verifyOtp(formData.email, otp);
-      dispatch(loginSuccess({ 
-        user: { name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber }, 
-        token: 'session_active' 
+      dispatch(loginSuccess({
+        user: { name: formData.name, email: formData.email, phoneNumber: formData.phoneNumber },
+        token: 'session_active'
       }));
       navigate('/dashboard');
     } catch (err) {
@@ -83,20 +89,20 @@ export const RegisterPage = () => {
   if (step === 'otp') {
     return (
       <div className="min-h-[calc(100vh-64px)] bg-slate-50 flex items-center justify-center p-4">
-        <FormWrapper 
-          title="Verify Email" 
+        <FormWrapper
+          title="Verify Email"
           description={`We've sent a 6-digit OTP to ${formData.email}`}
           onSubmit={handleOtpSubmit}
           className="max-w-md"
         >
           {mfaSecret && (
-             <div className="p-4 mb-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md text-sm">
-                <strong className="block mb-1 text-base">IMPORTANT:</strong> 
-                You enabled MFA. Please save this backup Secret Key securely. If you cannot receive OTPs during login, this key is the only way into your account:
-                <div className="font-mono text-xl mt-3 mb-1 font-bold break-all bg-white p-3 rounded text-center shadow-sm">
-                  {mfaSecret}
-                </div>
-             </div>
+            <div className="p-4 mb-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md text-sm">
+              <strong className="block mb-1 text-base">IMPORTANT:</strong>
+              You enabled MFA. Please save this backup Secret Key securely. If you cannot receive OTPs during login, this key is the only way into your account:
+              <div className="font-mono text-xl mt-3 mb-1 font-bold break-all bg-white p-3 rounded text-center shadow-sm">
+                {mfaSecret}
+              </div>
+            </div>
           )}
           <div className="space-y-4">
             <InputField
@@ -136,7 +142,7 @@ export const RegisterPage = () => {
           <InputField label="Full Name" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} disabled={loading} />
           <InputField label="Phone Number" type="text" name="phoneNumber" placeholder="1234567890" value={formData.phoneNumber} onChange={handleChange} disabled={loading} />
           <InputField label="Email Address" type="email" name="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} disabled={loading} />
-          
+
           <div className="flex items-center space-x-2 py-2">
             <input type="checkbox" id="mfaRequired" name="mfaRequired" checked={formData.mfaRequired} onChange={handleChange} disabled={loading} className="w-4 h-4 text-primary-600 rounded" />
             <label htmlFor="mfaRequired" className="text-sm font-medium text-foreground cursor-pointer">

@@ -224,11 +224,11 @@ public class UserServiceImp1 implements UserService {
         return new ResponseDTO("Password changed successfully");
     }
 
-    @Scheduled(fixedRate = 10000)
-    public void removeExpiredOTP() {
-        List<OTP> expiredOTPs = otpRepository.findAllByCreatedAtBefore(LocalDateTime.now().minusMinutes(10));
-        if (expiredOTPs.size() > 0)
-            otpRepository.deleteAll(expiredOTPs);
-        System.out.println("Expired OTPs removed: " + expiredOTPs.size());
-    }
+    // @Scheduled(fixedRate = 10000)
+    // public void removeExpiredOTP() {
+    //     List<OTP> expiredOTPs = otpRepository.findAllByCreatedAtBefore(LocalDateTime.now().minusMinutes(10));
+    //     if (expiredOTPs.size() > 0)
+    //         otpRepository.deleteAll(expiredOTPs);
+    //     System.out.println("Expired OTPs removed: " + expiredOTPs.size());
+    // }
 }
