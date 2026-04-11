@@ -26,11 +26,31 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response && error.response.data) {
+      const data = error.response.data;
+      let backendMessage = null;
+
+      if (typeof data === 'string') {
+        if (!data.trim().startsWith('<html')) {
+          backendMessage = data;
+        }
+      } else if (typeof data === 'object') {
+        backendMessage = data.message || data.error || data.detail;
+      }
+
+      if (backendMessage) {
+        error.message = backendMessage;
+      }
+    }
+
     if (error.response && error.response.status === 401) {
       // Global handling for unauthorized access (e.g. token expired)
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      const isAuthPage = window.location.pathname.includes('/login') || window.location.pathname.includes('/register');
+      if (!isAuthPage) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

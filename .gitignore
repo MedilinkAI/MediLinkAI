@@ -7,3 +7,5 @@ documented issues/walkthrough.md
 .env
 .env
 .vscode/launch.json
+Web/.DS_Store
+.DS_Store

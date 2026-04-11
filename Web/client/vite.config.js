@@ -6,7 +6,7 @@ import tailwindcss from 'tailwindcss'
 export default defineConfig({
   plugins: [react()],
   // Point Vite to the MediLinkAI directory which contains your .env file
-  envDir: '../../',
+  envDir: './',
   css: {
     postcss: {
       plugins: [tailwindcss()],
